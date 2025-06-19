@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}ConnectBox{% endblock %}</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #1e1e1e;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #333;
+            text-align: left;
+        }
+        th {
+            background-color: #222;
+        }
+        input, button {
+            padding: 8px;
+            background-color: #333;
+            border: none;
+            color: #f0f0f0;
+            margin-top: 5px;
+        }
+        button:hover {
+            background-color: #444;
+        }
+        a {
+            color: #64b5f6;
+        }
+        .error {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>
