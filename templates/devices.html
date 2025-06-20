@@ -2,7 +2,7 @@
 {% block title %}Dashboard - ConnectBox{% endblock %}
 {% block content %}
     <h2>Welcome, {{ session['username'] }}</h2>
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
 
     <h3>Registered Devices</h3>
     <table>
@@ -24,20 +24,23 @@
             <td>{{ device.registered }}</td>
             <td>{{ device.notes }}</td>
             <td>
-                <form method="post" action="{{ url_for('ping_device', device_id=device.id) }}" style="display:inline;">
+                <form method="get" action="{{ url_for('device.ping', hostname=device.hostname) }}" style="display:inline;">
                     <button type="submit">Ping</button>
                 </form>
-                <form method="post" action="{{ url_for('delete_device', device_id=device.id) }}" style="display:inline;">
+                <form method="post" action="{{ url_for('device.delete', hostname=device.hostname) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
                     <button type="submit">Delete</button>
                 </form>
-                <a href="{{ url_for('console_device', device_id=device.id) }}">Console</a>
+
+                <a href="{{ url_for('device.console', hostname=device.hostname) }}">Console</a>
             </td>
+
+
         </tr>
         {% endfor %}
     </table>
 
     <h3>Register New Device</h3>
-    <form method="post" action="{{ url_for('register') }}">
+    <form method="post" action="{{ url_for('device.register') }}">
         <label for="hostname">Hostname:</label><br>
         <input type="text" name="hostname" required><br>
         <label for="port">Port:</label><br>

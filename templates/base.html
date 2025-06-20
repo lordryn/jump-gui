@@ -40,9 +40,87 @@
         .error {
             color: #f44336;
         }
+
+        /* Notification styles */
+        .notification-container {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .notification-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .notification-badge {
+            background: red;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+        }
+        .notification-panel {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #1e1e1e;
+            border: 1px solid #444;
+            padding: 10px;
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+        }
+        .notification-item {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
+        }
     </style>
+
+    <script>
+        function toggleNotificationPanel() {
+            const panel = document.getElementById("notification-panel");
+            panel.style.display = panel.style.display === "block" ? "none" : "block";
+        }
+
+        document.addEventListener("click", function(event) {
+            const panel = document.getElementById("notification-panel");
+            const bell = document.querySelector(".notification-icon");
+            if (panel && !panel.contains(event.target) && !bell.contains(event.target)) {
+                panel.style.display = "none";
+            }
+        });
+    </script>
 </head>
 <body>
+
+    <div class="notification-container">
+        <span class="notification-icon" onclick="toggleNotificationPanel()">🔔</span>
+        {% if notification_count > 0 %}
+            <span class="notification-badge">{{ notification_count }}</span>
+        {% endif %}
+        <div id="notification-panel" class="notification-panel">
+            {% for notification in notifications %}
+            <div class="notification-item">
+                {{ notification.message }}
+                {% if notification.type == 'auth_request' %}
+                    <form method="post" action="{{ url_for('device.approve_key', hostname=notification.data.hostname) }}" style="display:inline;">
+                        <button title="Approve" style="background-color:green;">✔</button>
+                    </form>
+                    <form method="post" action="{{ url_for('device.reject_key', hostname=notification.data.hostname) }}" style="display:inline;">
+                        <button title="Reject" style="background-color:crimson;">✖</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
     {% block content %}{% endblock %}
+
 </body>
 </html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="3583ba2a-d292-4142-88c5-d6a5821c79e8" name="wcs-jump">
+        <fileTransfer accessType="SFTP" host="jump.wcs.business" port="22" sshConfigId="c738e8d5-62a1-45be-8e54-2e9fbf457c9d" sshConfig="dark_phlegm@jump.wcs.business:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
