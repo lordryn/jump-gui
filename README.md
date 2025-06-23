@@ -60,12 +60,20 @@ jump-gui/
 
 ---
 
-## 💻 Client Script (ConnectBox)
+## 💻 ConnectBox Client Script
 
-Deployable bash script that:
-- Tries `ssh -R` on open ports
-- Sends device registration to jump server
-- Optionally requests SSH key approval
+`connectbox_client.sh` is a self-contained Bash script used on the ConnectBox device to automate connection with the jump server.
+
+It performs the following:
+
+- Generates an SSH keypair if not already present
+- Sends its public key to `/api/request-auth` for approval
+- Polls `/api/is-authed` until authorized
+- Retrieves its assigned reverse SSH port from the server
+- Begins sending heartbeat pings to `/api/ping/<hostname>` every 30 seconds
+- Establishes a reverse SSH tunnel to the jump server on the approved port
+
+> ⚠️ Note: The reverse shell behavior is not yet reconfigured for this flow. Further tuning is required to ensure shell access behaves as expected once the tunnel is up.
 
 ---
 

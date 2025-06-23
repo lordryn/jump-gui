@@ -175,7 +175,7 @@ def is_authed():
         return jsonify({"status": "pending"}), 200
 
     if any(hostname in line for line in authorized.splitlines()):
-        from services.device_service import device_service
+        device_service = current_app.config["device_service"]
         device = device_service.get_device(hostname)
         return jsonify({"status": "authed", "port": device.port}), 200
 
