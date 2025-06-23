@@ -80,7 +80,7 @@ It performs the following:
 ## 🚧 Roadmap
 
 - [x] Device approval from web UI
-- [ ] `/api/ping` + timed expiration
+- [x] `/api/ping` + timed expiration
 - [ ] systemd service for client script
 - [ ] Theming & customization panel
 - [ ] Audit logging
