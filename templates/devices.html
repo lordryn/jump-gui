@@ -11,6 +11,7 @@
             <th>Hostname</th>
             <th>Port</th>
             <th>Status</th>
+            <th>Last Seen</th>
             <th>Registered</th>
             <th>Notes</th>
             <th>Actions</th>
@@ -21,6 +22,7 @@
             <td>{{ device.hostname }}</td>
             <td>{{ device.port }}</td>
             <td>{{ device.status }}</td>
+            <td>{{ device.last_seen }}</td>
             <td>{{ device.registered }}</td>
             <td>{{ device.notes }}</td>
             <td>
@@ -30,11 +32,8 @@
                 <form method="post" action="{{ url_for('device.delete', hostname=device.hostname) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
                     <button type="submit">Delete</button>
                 </form>
-
                 <a href="{{ url_for('device.console', hostname=device.hostname) }}">Console</a>
             </td>
-
-
         </tr>
         {% endfor %}
     </table>

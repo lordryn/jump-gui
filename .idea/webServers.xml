@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="3583ba2a-d292-4142-88c5-d6a5821c79e8" name="wcs-jump">
-        <fileTransfer accessType="SFTP" host="jump.wcs.business" port="22" sshConfigId="c738e8d5-62a1-45be-8e54-2e9fbf457c9d" sshConfig="dark_phlegm@jump.wcs.business:22 key" keyPair="true">
+      <webServer id="961c13fa-38c1-4089-aa95-f6718f0d161c" name="wcserv.local">
+        <fileTransfer accessType="SFTP" host="wcserv.local" port="22" sshConfigId="e48c1bf8-838c-451a-a6ea-b0f6c08582a3" sshConfig="ryn@wcserv.local:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

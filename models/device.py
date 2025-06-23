@@ -2,7 +2,7 @@
 from datetime import datetime
 
 class Device:
-    def __init__(self, id, hostname, port, status='unknown', registered=None, notes='', device_type=None):
+    def __init__(self, id, hostname, port, status='unknown', registered=None, notes='', device_type=None, last_seen=None):
         self.id = id
         self.hostname = hostname
         self.port = port
@@ -10,10 +10,10 @@ class Device:
         self.registered = registered or datetime.utcnow().isoformat()
         self.notes = notes
         self.device_type = device_type or self._infer_type()
+        self.last_seen = last_seen or self.registered
 
     def _infer_type(self):
         return 'laptop' if self.hostname.lower().startswith('connectbook') else 'pi'
-
 
     def to_dict(self):
         return {
@@ -22,6 +22,7 @@ class Device:
             'port': self.port,
             'status': self.status,
             'registered': self.registered,
+            'last_seen': self.last_seen,
             'notes': self.notes,
             'device_type': self.device_type
         }
@@ -35,5 +36,6 @@ class Device:
             status=data.get('status', 'unknown'),
             registered=data.get('registered'),
             notes=data.get('notes', ''),
-            device_type=data.get('device_type', 'pi')
+            device_type=data.get('device_type', 'pi'),
+            last_seen=data.get('last_seen')
         )

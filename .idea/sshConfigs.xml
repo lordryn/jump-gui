@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig host="jump.wcs.business" id="c738e8d5-62a1-45be-8e54-2e9fbf457c9d" keyPath="C:\Users\aarons\.ssh\id_ed25519" port="22" nameFormat="DESCRIPTIVE" username="dark_phlegm" useOpenSSHConfig="false" />
+      <sshConfig authType="PASSWORD" host="wcserv.local" id="e48c1bf8-838c-451a-a6ea-b0f6c08582a3" port="22" nameFormat="DESCRIPTIVE" username="ryn" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>

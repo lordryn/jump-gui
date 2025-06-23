@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="wcs-jump" remoteFilesAllowedToDisappearOnAutoupload="false" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="wcserv.local" remoteFilesAllowedToDisappearOnAutoupload="false" autoUploadExternalChanges="true">
     <serverData>
-      <paths name="wcs-jump">
+      <paths name="wcserv.local">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/dark_phlegm/jump-gui" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/ryn/jump-gui" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

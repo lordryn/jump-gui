@@ -54,10 +54,14 @@ class DeviceService:
             port=data.get("port"),
             status=data.get("status", "Pending"),
             notes=data.get("notes", ""),
-            device_type=data.get("device_type", "pi")  # <- key change here
+            device_type=data.get("device_type", "pi")
         )
         self.devices.append(device)
         self._save_devices()
 
-
-
+    def save(self, device):
+        for i, d in enumerate(self.devices):
+            if d.id == device.id:
+                self.devices[i] = device
+                break
+        self._save_devices()
