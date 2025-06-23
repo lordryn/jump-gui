@@ -91,7 +91,7 @@ It performs the following:
 
 ## 🛠️ Authorship & Project Ownership
 
-This project, **ConnectBox™**, was designed and developed by Ryan "Lord Ryn" Wheeler.
+This project, **ConnectBox™** and associated programs, were designed and developed by Ryan "Lord Ryn" Wheeler.
 
 All system architecture, core code, and workflow logic were authored and tested by the developer, with AI used as a supplementary tool for troubleshooting, formatting, and planning.
 
