@@ -3,8 +3,9 @@
     "id": 1,
     "hostname": "ConnectBox0001",
     "port": 27060,
-    "status": "unknown",
+    "status": "Offline",
     "registered": "2025-06-20T09:05:00.917424",
+    "last_seen": "2025-06-20T09:05:00.917424",
     "notes": "sdfgdfg",
     "device_type": "pi"
   },
@@ -12,8 +13,9 @@
     "id": 2,
     "hostname": "ConnectBook0001",
     "port": 29165,
-    "status": "unknown",
+    "status": "Offline",
     "registered": "2025-06-20T09:05:21.054201",
+    "last_seen": "2025-06-20T09:05:21.054201",
     "notes": "sdfgdfg",
     "device_type": "laptop"
   }
