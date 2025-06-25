@@ -80,14 +80,21 @@ It performs the following:
 ## 🚧 Roadmap
 
 - [x] Device approval from web UI
-- [ ] `/api/ping` + timed expiration
+- [x] `/api/ping` + timed expiration
 - [ ] systemd service for client script
 - [ ] Theming & customization panel
 - [ ] Audit logging
 
 ---
 
-## 🧠 Credits
+---
 
-Maintained by Ryan ("lord ryn")  
-Written with assistance from ChatGPT (code generation + architecture planning)
+## 🛠️ Authorship & Project Ownership
+
+This project, **ConnectBox™** and associated programs, were designed and developed by Ryan "Lord Ryn" Wheeler.
+
+All system architecture, core code, and workflow logic were authored and tested by the developer, with AI used as a supplementary tool for troubleshooting, formatting, and planning.
+
+Unless otherwise stated, all code and design decisions originate from the project's creator. AI contributions were used only under human supervision and refinement.
+
+For licensing, contributions, or attribution inquiries, contact: lordryn@yahoo.com
