@@ -50,7 +50,45 @@ def is_authed():
     device = device_service.get_device(hostname)
     if device:
         return jsonify({"status": "authed", "port": device.port})
-    return jsonify({"status": "pending"})
+    return jsonify({"status": "pending"})\
+
+@device_bp.route("/api/request-auth", methods=["POST"])
+def request_auth():
+    data = request.get_json()
+    hostname = data.get("hostname")
+    pubkey = data.get("public_key")
+
+    if not hostname or not pubkey:
+        return jsonify({"error": "hostname and public_key are required"}), 400
+
+    pending_file = "pending_keys.json"
+
+    try:
+        if os.path.exists(pending_file):
+            with open(pending_file, "r") as f:
+                pending = json.load(f)
+        else:
+            pending = {}
+
+        pending[hostname] = pubkey
+
+        with open(pending_file, "w") as f:
+            json.dump(pending, f, indent=2)
+
+        notif_service = current_app.config["notif_service"]
+        notif_service.add_notification(
+            type_="auth_request",
+            message=f"New device requesting auth: {hostname}",
+            data={"hostname": hostname}
+        )
+
+        print(f"[REQUEST-AUTH] Key saved for {hostname}")
+        return jsonify({"status": "pending"}), 200
+
+    except Exception as e:
+        print(f"[REQUEST-AUTH] Failed: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 @device_bp.route("/heartbeat/start/<hostname>", methods=["POST"])
 @login_required
@@ -92,8 +130,50 @@ def ping(hostname):
 @login_required
 def delete_device(hostname):
     device_service = current_app.config["device_service"]
+    notif_service = current_app.config["notif_service"]
+
+    # 1. Try removing from authorized_keys
+    key_path = os.path.expanduser("~/.ssh/authorized_keys")
+    try:
+        with open(key_path, "r") as f:
+            lines = f.readlines()
+
+        updated_lines = [line for line in lines if hostname not in line]
+
+        if len(updated_lines) == len(lines):
+            print(f"[DELETE] No SSH key found for {hostname}. Aborting delete.")
+            return redirect(url_for("device.index"))
+
+        with open(key_path, "w") as f:
+            f.writelines(updated_lines)
+        print(f"[DELETE] SSH key for {hostname} removed.")
+
+    except Exception as e:
+        print(f"[DELETE] Error removing key for {hostname}: {e}")
+        return redirect(url_for("device.index"))
+
+    # 2. Remove from pending_keys.json if present
+    try:
+        with open("pending_keys.json", "r+") as f:
+            pending = json.load(f)
+            if hostname in pending:
+                del pending[hostname]
+                f.seek(0)
+                json.dump(pending, f, indent=2)
+                f.truncate()
+                print(f"[DELETE] {hostname} removed from pending_keys.")
+    except FileNotFoundError:
+        pass
+
+    # 3. Remove from devices.json
     device_service.delete_device(hostname)
+
+    # 4. Clear associated notifications
+    notif_service.clear_by_hostname(hostname)
+
+    print(f"[DELETE] Device {hostname} fully removed.")
     return redirect(url_for("device.index"))
+
 
 @device_bp.route("/console/<hostname>")
 @login_required
