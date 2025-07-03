@@ -96,6 +96,10 @@
         });
     </script>
 </head>
+<script>
+  setInterval(() => location.reload(), 30000); // Refresh every 30s
+</script>
+
 <body>
 
     <div class="notification-container">
@@ -123,4 +127,17 @@
     {% block content %}{% endblock %}
 
 </body>
+<p id="refresh-timer">Refreshing in 30s...</p>
+
+<script>
+  let countdown = 30;
+  const timerEl = document.getElementById("refresh-timer");
+
+  setInterval(() => {
+    countdown--;
+    if (countdown <= 0) location.reload();
+    else timerEl.textContent = `Refreshing in ${countdown}s...`;
+  }, 1000);
+</script>
+
 </html>
