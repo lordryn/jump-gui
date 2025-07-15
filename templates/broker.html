@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="text-2xl font-bold mb-4">Broker Panel</h2>
+  <div class="grid grid-cols-3 gap-4">
+
+    <!-- Unassigned Sessions -->
+    <div class="col-span-1">
+      <h3 class="text-xl font-semibold mb-2">Unassigned Sessions</h3>
+      <div id="unassigned-list" class="space-y-2">
+        {% for session in sessions %}
+        <div class="broker-card">
+          <h4>Client: {{ session.client_id }}</h4>
+          <p>Request: {{ session.request_time }}</p>
+          <div class="broker-actions">
+            <button type="button"
+                    class="bg-blue-500 text-white px-2 py-1 rounded"
+                    onclick="openPreviewModal('{{ session.show_me_url }}')">
+              Preview
+            </button>
+            <form method="POST" action="/broker/assign" class="mt-2 flex items-center">
+              <select name="tech_id" class="text-black px-2 py-1 rounded mr-2">
+                {% for tech in techs if tech.online %}
+                  <option value="{{ tech.tech_id }}">{{ tech.tech_id }}>{{ tech.hostname }}</option>
+                {% endfor %}
+              </select>
+              <input type="hidden" name="session_id" value="{{ session.id }}">
+              <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded">Assign</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Available Techs -->
+    <div class="col-span-1">
+      <h3 class="text-xl font-semibold mb-2">Available Techs</h3>
+      <div id="tech-list" class="space-y-2">
+        {% for tech in techs %}
+        <div class="broker-card">
+          <h4>Tech: {{ tech.tech_id }}</h4>
+          <p>Tech host: {{ tech.hostname }}</p>
+          <p>Status: <span class="text-sm {{ 'text-green-600' if tech.online else 'text-red-600' }}">
+            {{ 'Online' if tech.online else 'Offline' }}</span></p>
+          <p>Sessions: {{ tech.sessions_assigned }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Active Sessions -->
+    <div class="col-span-1">
+      <h3 class="text-xl font-semibold mb-2">Active Sessions</h3>
+      <div id="active-list" class="space-y-2">
+        {% for session in active_sessions %}
+        <div class="broker-card">
+          <h4>Tech: {{ session.assigned_to }}</h4>
+          <p>Client: {{ session.client_id }}</p>
+          <div class="broker-actions mt-2">
+            <button class="bg-indigo-600 text-white px-2 py-1 rounded">Join Stream</button>
+            <button class="bg-gray-700 text-white px-2 py-1 rounded">Open Chat</button>
+            <button class="bg-orange-600 text-white px-2 py-1 rounded">Remote Access</button>
+            <form method="POST" action="/broker/unassign" class="inline ml-2">
+              <input type="hidden" name="session_id" value="{{ session.id }}">
+              <button type="submit" class="bg-red-600 text-white px-2 py-1 rounded">Unassign</button>
+            </form>
+            <form method="POST" action="/broker/close" class="inline ml-2">
+              <input type="hidden" name="session_id" value="{{ session.id }}">
+              <button type="submit" class="bg-rose-600 text-white px-2 py-1 rounded">Close</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+  <div class="bg-gray-800 p-4 rounded-lg w-[90%] md:w-[600px]">
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="text-white text-lg font-semibold">🎬 Preview Session</h3>
+      <button onclick="closePreviewModal()" class="text-white">✖</button>
+    </div>
+    <video id="previewVideo" class="w-full rounded" controls></video>
+  </div>
+</div>
+
+<style>
+  .broker-card {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  .broker-card h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .broker-section {
+    margin-bottom: 2rem;
+  }
+
+  .broker-actions button {
+    margin-right: 0.5rem;
+  }
+</style>
+
+<script>
+  function openPreviewModal(videoUrl) {
+    const modal = document.getElementById("previewModal");
+    const video = document.getElementById("previewVideo");
+    video.src = videoUrl;
+    modal.classList.remove("hidden");
+  }
+
+  function closePreviewModal() {
+    const modal = document.getElementById("previewModal");
+    const video = document.getElementById("previewVideo");
+    video.pause();
+    video.src = "";
+    modal.classList.add("hidden");
+  }
+</script>
+
+{% endblock %}

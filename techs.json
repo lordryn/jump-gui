@@ -1,0 +1,14 @@
+[
+  {
+    "tech_id": "tech001",
+    "hostname": "ConnectBox-X01",
+    "online": true,
+    "sessions_assigned": 0
+  },
+  {
+    "tech_id": "tech002",
+    "hostname": "ConnectBox-X02",
+    "online": false,
+    "sessions_assigned": 0
+  }
+]

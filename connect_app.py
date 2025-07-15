@@ -6,6 +6,8 @@ from services.device_service import DeviceService
 from services.user_service import UserService
 from services.notification_service import NotificationService
 from datetime import datetime, timedelta
+from routes.broker import broker_bp
+
 
 class ConnectApp:
     def __init__(self):
@@ -26,6 +28,7 @@ class ConnectApp:
         self.app.register_blueprint(auth_bp)
         self.app.register_blueprint(device_bp)
         self.app.register_blueprint(api_bp)
+        self.app.register_blueprint(broker_bp)
 
         # Auto-offline device timeout logic
         @self.app.before_request
