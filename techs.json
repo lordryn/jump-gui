@@ -3,7 +3,7 @@
     "tech_id": "tech001",
     "hostname": "ConnectBox-X01",
     "online": true,
-    "sessions_assigned": 0
+    "sessions_assigned": 7
   },
   {
     "tech_id": "tech002",

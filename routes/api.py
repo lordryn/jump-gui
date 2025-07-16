@@ -1,11 +1,14 @@
 import time
-
 from flask import Blueprint, jsonify, request, current_app
 from datetime import datetime
 import os
 import json
+from services.status_service import StatusService
 
 bp = Blueprint('api', __name__, url_prefix='/api')
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sessions_path = os.path.join(root_dir, "sessions.json")
+status_service = StatusService(sessions_path)
 
 @bp.route('/ping/<hostname>', methods=['POST'])
 def ping(hostname):
@@ -24,7 +27,6 @@ def request_session_binary():
     if not filename or not request.data:
         return jsonify({"error": "Missing filename or data"}), 400
 
-    # Save binary video to /static/videos/
     static_video_dir = os.path.join(os.path.dirname(__file__), "..", "static", "videos")
     os.makedirs(static_video_dir, exist_ok=True)
     file_path = os.path.join(static_video_dir, filename)
@@ -32,16 +34,17 @@ def request_session_binary():
     with open(file_path, "wb") as f:
         f.write(request.data)
 
-    # Try to extract client ID from filename (e.g., HOST_2025_07_15_14_00_00.avi)
     base_name = os.path.splitext(filename)[0]
     client_id = base_name.split("_")[0] if "_" in base_name else "UnknownClient"
 
+    session_id = f"sess{int(time.time())}"
     session = {
-        "id": f"sess{int(time.time())}",
+        "id": session_id,
         "client_id": client_id,
         "request_time": datetime.utcnow().isoformat(),
         "show_me_url": f"/static/videos/{filename}",
-        "assigned_to": None
+        "assigned_to": None,
+        "status": "pending"
     }
 
     root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -55,4 +58,24 @@ def request_session_binary():
     with open(sessions_path, "w") as f:
         json.dump(sessions, f, indent=2)
 
-    return jsonify({"status": "uploaded", "session_id": session["id"]})
+    status_service.update_status(session_id, "pending")
+
+    return jsonify({"status": "uploaded", "session_id": session_id})
+
+@bp.route('/status/<ticket_id>', methods=['GET'])
+def get_ticket_status(ticket_id):
+    status = status_service.get_status(ticket_id)
+    if not status:
+        return jsonify({"error": "Ticket not found"}), 404
+    return jsonify({"id": ticket_id, "status": status})
+
+
+@bp.route('/status/<ticket_id>', methods=['POST'])
+def update_ticket_status(ticket_id):
+    data = request.json
+    status = data.get("status")
+    assigned_to = data.get("assigned_to")
+    if not status:
+        return jsonify({"error": "Missing status"}), 400
+    status_service.update_status(ticket_id, status, assigned_to)
+    return jsonify({"message": "Status updated"}), 200

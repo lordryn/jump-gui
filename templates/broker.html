@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container py-4">
   <h2 class="text-2xl font-bold mb-4">Broker Panel</h2>
@@ -16,9 +15,10 @@
           <div class="broker-actions">
             <button type="button"
                     class="bg-blue-500 text-white px-2 py-1 rounded"
-                    onclick="openPreviewModal('{{ session.show_me_url }}')">
+                    onclick="openPreviewModal('{{ session.id }}')">
               Preview
             </button>
+
             <form method="POST" action="/broker/assign" class="mt-2 flex items-center">
               <select name="tech_id" class="text-black px-2 py-1 rounded mr-2">
                 {% for tech in techs if tech.online %}
@@ -116,11 +116,21 @@
 </style>
 
 <script>
-  function openPreviewModal(videoUrl) {
-    const modal = document.getElementById("previewModal");
-    const video = document.getElementById("previewVideo");
-    video.src = videoUrl;
-    modal.classList.remove("hidden");
+  function openPreviewModal(sessionId) {
+    fetch(`/broker/preview/${sessionId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.url) throw new Error("No video URL returned");
+
+        const modal = document.getElementById("previewModal");
+        const video = document.getElementById("previewVideo");
+        video.src = data.url;
+        modal.classList.remove("hidden");
+      })
+      .catch(err => {
+        console.error("Failed to preview session:", err);
+        alert("Could not preview session.");
+      });
   }
 
   function closePreviewModal() {
@@ -131,5 +141,6 @@
     modal.classList.add("hidden");
   }
 </script>
+
 
 {% endblock %}
