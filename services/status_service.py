@@ -91,20 +91,33 @@ class StatusService:
             print(f"[DEBUG] Sessions saved: {sessions}")
 
     def unassign(self, session_id, tech_id):
-        with self.lock:
-            sessions = self._load_sessions()
-            techs = self._load_techs()
-            for session in sessions:
-                if session["id"] == session_id and session["assigned_to"] == tech_id:
-                    session["assigned_to"] = None
-                    session["status"] = "pending"
-                    break
-            for tech in techs:
-                if tech["tech_id"] == tech_id:
-                    tech["sessions_assigned"] = max(tech.get("sessions_assigned", 1) - 1, 0)
-                    break
+        print(f"[SERVICE] Attempting to unassign session: {session_id} from tech: {tech_id}")
+        sessions = self._load_sessions()
+        techs = self._load_techs()
+
+        session_found = False
+        for session in sessions:
+            if session["id"] == session_id and session.get("assigned_to") == tech_id:
+                session["assigned_to"] = None
+                session["status"] = "pending"
+                session_found = True
+                print("[SERVICE] Session unassigned and marked as pending.")
+                break
+
+        for tech in techs:
+            if tech["tech_id"] == tech_id:
+                tech["sessions_assigned"] = max(tech.get("sessions_assigned", 1) - 1, 0)
+                print("[SERVICE] Tech session count updated.")
+                break
+
+        if session_found:
             self._save_sessions(sessions)
             self._save_techs(techs)
+            print("[SERVICE] Changes saved.")
+            return True
+        else:
+            print("[SERVICE] Session not found or tech mismatch.")
+            return False
 
     def mark_in_review(self, session_id):
         with self.lock:
