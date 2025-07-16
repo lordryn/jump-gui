@@ -1,18 +1,1 @@
-[
-  {
-    "id": "sess1752657824",
-    "client_id": "DEATHSTAR-02",
-    "request_time": "2025-07-16T09:23:44.655328",
-    "show_me_url": "/static/videos/DEATHSTAR-02_2025_7_16_9_23_38.mp4",
-    "assigned_to": null,
-    "status": "pending"
-  },
-  {
-    "id": "sess1752657943",
-    "client_id": "DEATHSTAR-02",
-    "request_time": "2025-07-16T09:25:43.266172",
-    "show_me_url": "/static/videos/DEATHSTAR-02_2025_7_16_9_25_42.mp4",
-    "assigned_to": null,
-    "status": "pending"
-  }
-]
+[]

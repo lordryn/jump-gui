@@ -60,3 +60,18 @@ def preview_session(session_id):
     status_service = current_app.config["status_service"]
     url = status_service.mark_in_review(session_id)
     return {"url": url}
+
+@broker_bp.route("/close", methods=["POST"])
+def close_session():
+    session_id = request.form.get("session_id")
+    print(f"[ROUTE] Close request received for session: {session_id}")
+
+    if not session_id:
+        print("[ERROR] Missing session_id in close request")
+        return redirect(url_for("broker.broker_home"))
+
+    status_service = current_app.config["status_service"]
+    success = status_service.close_session(session_id)
+
+    print(f"[ROUTE] Close completed. Success: {success}")
+    return redirect(url_for("broker.broker_home"))

@@ -130,3 +130,17 @@ class StatusService:
                     return session.get("show_me_url")
             print(f"[ERROR] Session ID {session_id} not found in mark_in_review()")
             return None
+
+    def close_session(self, session_id):
+        with self.lock:
+            sessions = self._load_sessions()
+            updated = False
+            for session in sessions:
+                if session["id"] == session_id:
+                    sessions.remove(session)
+                    updated = True
+                    print(f"[SERVICE] Session {session_id} closed and removed.")
+                    break
+            if updated:
+                self._save_sessions(sessions)
+            return updated

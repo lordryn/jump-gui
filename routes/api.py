@@ -35,20 +35,20 @@ def request_session_binary():
         f.write(request.data)
 
     base_name = os.path.splitext(filename)[0]
-    client_id = base_name.split("_")[0] if "_" in base_name else "UnknownClient"
+    parts = base_name.split("_")
+    identifier = parts[0] if len(parts) > 1 else "UnknownClient"
+    client_id = parts[1] if len(parts) > 1 else base_name
 
     session_id = f"sess{int(time.time())}"
     session = {
         "id": session_id,
         "client_id": client_id,
+        "identifier": identifier,
         "request_time": datetime.utcnow().isoformat(),
         "show_me_url": f"/static/videos/{filename}",
         "assigned_to": None,
         "status": "pending"
     }
-
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    sessions_path = os.path.join(root_dir, "sessions.json")
 
     with open(sessions_path, "r") as f:
         sessions = json.load(f)
@@ -69,7 +69,6 @@ def get_ticket_status(ticket_id):
         return jsonify({"error": "Ticket not found"}), 404
     return jsonify({"id": ticket_id, "status": status})
 
-
 @bp.route('/status/<ticket_id>', methods=['POST'])
 def update_ticket_status(ticket_id):
     data = request.json
@@ -79,3 +78,26 @@ def update_ticket_status(ticket_id):
         return jsonify({"error": "Missing status"}), 400
     status_service.update_status(ticket_id, status, assigned_to)
     return jsonify({"message": "Status updated"}), 200
+@bp.route('/sessions', methods=['GET'])
+def get_sessions_by_user():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Missing user_id"}), 400
+
+    sessions = status_service._load_sessions()
+    filtered = [s for s in sessions if s.get("identifier") == user_id]
+
+    if not filtered:
+        return jsonify({"latest": None, "total": 0})
+
+    latest = max(filtered, key=lambda s: s.get("request_time", ""))
+
+    return jsonify({
+        "latest": {
+            "id": latest.get("id"),
+            "status": latest.get("status"),
+            "client_id": latest.get("client_id")
+        },
+        "total": len(filtered)
+    })
+

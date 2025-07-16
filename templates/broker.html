@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container py-4">
   <h2 class="text-2xl font-bold mb-4">Broker Panel</h2>
-  <div class="grid grid-cols-3 gap-4">
+  <div class="grid grid-cols-4 gap-4">
 
     <!-- Unassigned Sessions -->
     <div class="col-span-1">
@@ -22,14 +22,54 @@
             <form method="POST" action="/broker/assign" class="mt-2 flex items-center">
               <select name="tech_id" class="text-black px-2 py-1 rounded mr-2">
                 {% for tech in techs if tech.online %}
-                  <option value="{{ tech.tech_id }}">{{ tech.tech_id }}>{{ tech.hostname }}</option>
+                  <option value="{{ tech.tech_id }}">{{ tech.tech_id }} &gt; {{ tech.hostname }}</option>
                 {% endfor %}
               </select>
               <input type="hidden" name="session_id" value="{{ session.id }}">
               <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded">Assign</button>
             </form>
+
+            <form method="POST" action="/broker/close" class="mt-2">
+              <input type="hidden" name="session_id" value="{{ session.id }}">
+              <button type="submit" class="bg-rose-600 text-white px-2 py-1 rounded">Close</button>
+            </form>
           </div>
         </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- In Review Sessions -->
+    <div class="container mt-4">
+      <h2>In Review</h2>
+      <div class="row">
+        {% for session in sessions if session.status == 'in review' %}
+          <div class="col-md-4">
+            <div class="card broker-card mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Session: {{ session.id }}</h5>
+                <p class="card-text">Client ID: {{ session.client_id }}</p>
+                <form method="POST" action="/broker/assign">
+                  <input type="hidden" name="session_id" value="{{ session.id }}">
+                  <select name="tech_id" class="form-control mb-2">
+                    {% for tech in techs %}
+                      <option value="{{ tech.tech_id }}">{{ tech.tech_id }}</option>
+                    {% endfor %}
+                  </select>
+                  <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+                </form>
+                <button type="button"
+                        class="btn btn-info btn-sm mt-2"
+                        onclick="openPreviewModal('{{ session.id }}')">
+                  Preview
+                </button>
+                <form method="POST" action="/broker/close" class="mt-2">
+                  <input type="hidden" name="session_id" value="{{ session.id }}">
+                  <button type="submit" class="btn btn-danger btn-sm">Close</button>
+                </form>
+              </div>
+            </div>
+          </div>
         {% endfor %}
       </div>
     </div>
@@ -85,7 +125,7 @@
 <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
   <div class="bg-gray-800 p-4 rounded-lg w-[90%] md:w-[600px]">
     <div class="flex justify-between items-center mb-2">
-      <h3 class="text-white text-lg font-semibold">🎬 Preview Session</h3>
+      <h3 class="text-white text-lg font-semibold">🎮 Preview Session</h3>
       <button onclick="closePreviewModal()" class="text-white">✖</button>
     </div>
     <video id="previewVideo" class="w-full rounded" controls></video>
@@ -143,6 +183,4 @@
     modal.classList.add("hidden");
   }
 </script>
-
-
 {% endblock %}
