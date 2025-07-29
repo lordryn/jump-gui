@@ -10,7 +10,7 @@
       <div id="unassigned-list" class="space-y-2">
         {% for session in sessions if session.status == "pending" %}
         <div class="broker-card">
-          <h4>Client: {{ session.client_id }}</h4>
+          <h4>Client: {{session.identifier}} ({{ session.client_id }})</h4>
           <p>Request: {{ session.request_time }}</p>
           <div class="broker-actions">
             <button type="button"
@@ -48,7 +48,7 @@
             <div class="card broker-card mb-4">
               <div class="card-body">
                 <h5 class="card-title">Session: {{ session.id }}</h5>
-                <p class="card-text">Client ID: {{ session.client_id }}</p>
+                <p class="card-text">Client: {{session.identifier}} ({{ session.client_id }})</p>
                 <form method="POST" action="/broker/assign">
                   <input type="hidden" name="session_id" value="{{ session.id }}">
                   <select name="tech_id" class="form-control mb-2">
@@ -97,7 +97,7 @@
         {% for session in sessions if session.status == "assigned to tech" %}
         <div class="broker-card">
           <h4>Tech: {{ session.assigned_to }}</h4>
-          <p>Client: {{ session.client_id }}</p>
+          <p>Client: {{session.identifier}} ({{ session.client_id }})</p>
           <div class="broker-actions mt-2">
             <button class="bg-indigo-600 text-white px-2 py-1 rounded">Join Stream</button>
             <button class="bg-gray-700 text-white px-2 py-1 rounded">Open Chat</button>
